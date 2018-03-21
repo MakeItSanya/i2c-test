@@ -2,7 +2,7 @@
  * i2c_test.c
  *
  * Created: 19.03.2018 16:14:11
- *  Author: Grout
+ *  Author: Grout and Sanya
  */ 
 #include "i2c_test.h"
 
@@ -22,7 +22,7 @@ void twiClockInit(void)
 void twiStart(void)
 {
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	while(!(TWCR & (1<<TWINT))); //Îæèäàíèå óñòàíîâêè TWINT
+	while(!(TWCR & (1<<TWINT))); //ÃŽÃ¦Ã¨Ã¤Ã Ã­Ã¨Ã¥ Ã³Ã±Ã²Ã Ã­Ã®Ã¢ÃªÃ¨ TWINT
 }
 
 void twiStop(void)
@@ -42,11 +42,11 @@ void ssd1306Init(uint8_t addr)
 {
 	unsigned char i;
 	
-	//ÌÀÑÑÈÂ ÄËß ÈÍÈÖÈÀËÈÇÀÖÈÈ
-	//A0 - íà÷àëî â ïðàâîì óãëó; A1 - íà÷àëî â ëåâîì óãëó
-	//C0 - íà÷àëî ñíèçó ýêðàíà; C8 - íà÷àëî ñâåðõó ýêðàíà
-	//12 - ïðÿìàÿ ëèíèÿ, 02, 22 - ëèíèÿ ÷åðåç ñòðî÷êó
-	//7F - ÿðêîñòü (ìàêñèìóì 0xFF)
+	//ÃŒÃ€Ã‘Ã‘ÃˆÃ‚ Ã„Ã‹ÃŸ ÃˆÃÃˆÃ–ÃˆÃ€Ã‹ÃˆÃ‡Ã€Ã–ÃˆÃˆ
+	//A0 - Ã­Ã Ã·Ã Ã«Ã® Ã¢ Ã¯Ã°Ã Ã¢Ã®Ã¬ Ã³Ã£Ã«Ã³; A1 - Ã­Ã Ã·Ã Ã«Ã® Ã¢ Ã«Ã¥Ã¢Ã®Ã¬ Ã³Ã£Ã«Ã³
+	//C0 - Ã­Ã Ã·Ã Ã«Ã® Ã±Ã­Ã¨Ã§Ã³ Ã½ÃªÃ°Ã Ã­Ã ; C8 - Ã­Ã Ã·Ã Ã«Ã® Ã±Ã¢Ã¥Ã°ÃµÃ³ Ã½ÃªÃ°Ã Ã­Ã 
+	//12 - Ã¯Ã°Ã¿Ã¬Ã Ã¿ Ã«Ã¨Ã­Ã¨Ã¿, 02, 22 - Ã«Ã¨Ã­Ã¨Ã¿ Ã·Ã¥Ã°Ã¥Ã§ Ã±Ã²Ã°Ã®Ã·ÃªÃ³
+	//7F - Ã¿Ã°ÃªÃ®Ã±Ã²Ã¼ (Ã¬Ã ÃªÃ±Ã¨Ã¬Ã³Ã¬ 0xFF)
 	static const unsigned char PROGMEM init[18]=
 	{
 		0xA8,0x3F,0xD3,0x00,0x40,0xA1,0xC8,0xDA,0x12,
@@ -57,20 +57,20 @@ void ssd1306Init(uint8_t addr)
 
 	for(i = 0; i < 18; i++)
 	{
-		twiSendByte(COM); //Ïîñûëêà áèòà âêëþ÷àþùåãî ðåæèì êîìàíäû
+		twiSendByte(COM); //ÃÃ®Ã±Ã»Ã«ÃªÃ  Ã¡Ã¨Ã²Ã  Ã¢ÃªÃ«Ã¾Ã·Ã Ã¾Ã¹Ã¥Ã£Ã® Ã°Ã¥Ã¦Ã¨Ã¬ ÃªÃ®Ã¬Ã Ã­Ã¤Ã»
 		twiSendByte(pgm_read_byte(init+i));
 	}
 }
 
 void clearDisplay(void)
 {
-	//âûáèðàåì Horizontal Addressing Mode (çàïîëíåíèå ýêðàíà ïî òèïó òîãî êàê ÷èòàåì êíèãó)
+	//Ã¢Ã»Ã¡Ã¨Ã°Ã Ã¥Ã¬ Horizontal Addressing Mode (Ã§Ã Ã¯Ã®Ã«Ã­Ã¥Ã­Ã¨Ã¥ Ã½ÃªÃ°Ã Ã­Ã  Ã¯Ã® Ã²Ã¨Ã¯Ã³ Ã²Ã®Ã£Ã® ÃªÃ Ãª Ã·Ã¨Ã²Ã Ã¥Ã¬ ÃªÃ­Ã¨Ã£Ã³)
 	twiSendByte(COM);
 	twiSendByte(0x20);
 	twiSendByte(COM);
 	twiSendByte(0x00);
 	
-	//çàïîëíÿåì ñòðîêó ñëåâà íàïðàâî
+	//Ã§Ã Ã¯Ã®Ã«Ã­Ã¿Ã¥Ã¬ Ã±Ã²Ã°Ã®ÃªÃ³ Ã±Ã«Ã¥Ã¢Ã  Ã­Ã Ã¯Ã°Ã Ã¢Ã®
 	twiSendByte(DATS);
 	for(unsigned char i = 0; i < 8; i++)
 	{
